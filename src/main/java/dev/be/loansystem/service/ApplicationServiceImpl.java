@@ -2,6 +2,8 @@ package dev.be.loansystem.service;
 
 import dev.be.loansystem.domain.Application;
 import dev.be.loansystem.dto.ApplicationDTO.*;
+import dev.be.loansystem.exception.BaseException;
+import dev.be.loansystem.exception.ResultType;
 import dev.be.loansystem.repository.ApplicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,5 +26,14 @@ public class ApplicationServiceImpl implements ApplicationService{
         Application applied = applicationRepository.save(application);
 
         return modelMapper.map(applied, Response.class);
+    }
+
+    @Override
+    public Response get(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
+
+        return modelMapper.map(application, Response.class);
     }
 }
