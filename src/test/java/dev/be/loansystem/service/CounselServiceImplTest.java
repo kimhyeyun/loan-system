@@ -1,19 +1,23 @@
 package dev.be.loansystem.service;
 
 import dev.be.loansystem.domain.Counsel;
-import dev.be.loansystem.dto.CounselDTO.*;
+import dev.be.loansystem.dto.CounselDTO.Request;
+import dev.be.loansystem.dto.CounselDTO.Response;
+import dev.be.loansystem.exception.BaseException;
+import dev.be.loansystem.exception.ResultType;
 import dev.be.loansystem.repository.CounselRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -53,5 +57,29 @@ class CounselServiceImplTest {
         Response actual = counselService.create(request);
 
         assertThat(actual.getName()).isSameAs(entity.getName());
+    }
+
+    @Test
+    void Should_ReturnResponseOfExistCounselEntity_When_RequestExistCounselId() {
+        Long findId = 1L;
+
+        Counsel entity = Counsel.builder()
+                .counselId(findId)
+                .build();
+
+        when(counselRepository.findById(findId)).thenReturn(Optional.ofNullable(entity));
+
+        Response actual = counselService.get(1L);
+
+        assertThat(actual.getCounselId()).isSameAs(findId);
+    }
+
+    @Test
+    void Should_ThrowException_When_RequestNotExistCounselId() {
+        Long findId = 2L;
+
+        when(counselRepository.findById(findId)).thenThrow(new BaseException(ResultType.SYSTEM_ERROR));
+
+        assertThrows(BaseException.class, () -> counselService.get(findId));
     }
 }
