@@ -5,4 +5,6 @@ import dev.be.loansystem.dto.CounselDTO.*;
 public interface CounselService {
 
     Response create(Request request);
+
+    Response get(Long counselId);
 }
