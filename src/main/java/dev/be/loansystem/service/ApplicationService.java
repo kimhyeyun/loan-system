@@ -12,4 +12,7 @@ public interface ApplicationService {
     Response update(Long applicationId, Request request);
 
     void delete(Long applicationId);
+
+    Boolean accetpTerms(Long applicationId, AcceptTermsRequest request);
+
 }
