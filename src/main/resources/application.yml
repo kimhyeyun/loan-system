@@ -20,6 +20,11 @@ spring:
     console:
       path: /h2-console
       enabled: true
+  servlet:
+    multipart:
+      location: /Users/yun/Desktop/YUN/fastCampus/loan-system/src/main/resources/fileStorage
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 logging:
   level:
