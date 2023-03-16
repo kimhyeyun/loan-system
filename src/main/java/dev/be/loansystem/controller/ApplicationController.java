@@ -1,10 +1,20 @@
 package dev.be.loansystem.controller;
 
 import dev.be.loansystem.dto.ApplicationDTO.*;
+import dev.be.loansystem.dto.FileDTO;
 import dev.be.loansystem.dto.ResponseDTO;
 import dev.be.loansystem.service.ApplicationService;
+import dev.be.loansystem.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -12,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ApplicationController extends AbstractController {
 
     private final ApplicationService applicationService;
+    private final FileStorageService fileStorageService;
 
     @PostMapping
     public ResponseDTO<Response> create(@RequestBody Request request) {
@@ -38,5 +49,35 @@ public class ApplicationController extends AbstractController {
     @PostMapping("/{applicationId}/terms")
     public ResponseDTO<Boolean> acceptTerms(@PathVariable Long applicationId, @RequestBody AcceptTermsRequest request) {
         return ok(applicationService.accetpTerms(applicationId, request));
+    }
+
+    @PostMapping("/files")
+    public ResponseDTO<Void> upload(MultipartFile file) {
+        fileStorageService.save(file);
+        return ok();
+    }
+
+    @GetMapping("/files")
+    public ResponseEntity<Resource> download(@RequestParam(value = "fileName") String fileName){
+        Resource file = fileStorageService.load(fileName);
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    @GetMapping("/files/infos")
+    public ResponseDTO<List<FileDTO>> getFileInfos() {
+        List<FileDTO> fileInfos = fileStorageService.loadAll().map(path -> {
+            String fileName = path.getFileName().toString();
+            return FileDTO.builder()
+                    .name(fileName)
+                    .url(MvcUriComponentsBuilder
+                            .fromMethodName(ApplicationController.class, "download", fileName)
+                            .build()
+                            .toString())
+                    .build();
+
+        }).collect(Collectors.toList());
+
+        return ok(fileInfos);
     }
 }
