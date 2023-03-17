@@ -58,7 +58,7 @@ public class ApplicationController extends AbstractController {
     }
 
     @GetMapping("/files")
-    public ResponseEntity<Resource> download(@RequestParam(value = "fileName") String fileName){
+    public ResponseEntity<Resource> download(@RequestParam(value = "fileName") String fileName) {
         Resource file = fileStorageService.load(fileName);
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
@@ -79,5 +79,11 @@ public class ApplicationController extends AbstractController {
         }).collect(Collectors.toList());
 
         return ok(fileInfos);
+    }
+
+    @DeleteMapping("/files")
+    public ResponseDTO<Void> deleteAll() {
+        fileStorageService.deleteAll();
+        return ok();
     }
 }
