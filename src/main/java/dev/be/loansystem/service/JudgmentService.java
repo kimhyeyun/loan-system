@@ -1,5 +1,6 @@
 package dev.be.loansystem.service;
 
+import dev.be.loansystem.dto.ApplicationDTO.GrantAmount;
 import dev.be.loansystem.dto.JudgmentDTO.*;
 
 public interface JudgmentService {
@@ -13,4 +14,6 @@ public interface JudgmentService {
     Response update(Long judgmentId, Request request);
 
     void delete(Long judgmentId);
+
+    GrantAmount grant(Long judgmentId);
 }
