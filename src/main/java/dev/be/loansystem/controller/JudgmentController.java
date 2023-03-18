@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/judgments")
-public class JudgmentController extends AbstractController{
+public class JudgmentController extends AbstractController {
 
     private final JudgmentService judgmentService;
 
@@ -21,5 +21,10 @@ public class JudgmentController extends AbstractController{
     @GetMapping("/{judgmentId}")
     public ResponseDTO<Response> get(@PathVariable Long judgmentId) {
         return ok(judgmentService.get(judgmentId));
+    }
+
+    @PutMapping("/{judgmentId}")
+    public ResponseDTO<Response> update(@PathVariable Long judgmentId, @RequestBody Request request) {
+        return ok(judgmentService.update(judgmentId, request));
     }
 }
