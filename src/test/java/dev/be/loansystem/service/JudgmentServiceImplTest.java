@@ -2,6 +2,7 @@ package dev.be.loansystem.service;
 
 import dev.be.loansystem.domain.Application;
 import dev.be.loansystem.domain.Judgment;
+import dev.be.loansystem.dto.ApplicationDTO.GrantAmount;
 import dev.be.loansystem.dto.JudgmentDTO.*;
 import dev.be.loansystem.repository.ApplicationRepository;
 import dev.be.loansystem.repository.JudgmentRepository;
@@ -132,5 +133,30 @@ class JudgmentServiceImplTest {
         judgmentService.delete(targetId);
 
         assertThat(entity.getIsDeleted()).isTrue();
+    }
+
+    @Test
+    void Should_ReturnUpdateResponseOfExistsApplicationEntity_When_RequestGrantApprovalAmountOfJudgmentInfo() {
+        Long findId = 1L;
+
+        Judgment judgmentEntity = Judgment.builder()
+                .name("Kim")
+                .applicationId(findId)
+                .approvalAmount(BigDecimal.valueOf(5000000))
+                .build();
+
+        Application applicationEntity = Application.builder()
+                .applicationId(findId)
+                .approvalAmount(BigDecimal.valueOf(5000000))
+                .build();
+
+        when(judgmentRepository.findById(findId)).thenReturn(Optional.ofNullable(judgmentEntity));
+        when(applicationRepository.findById(findId)).thenReturn(Optional.ofNullable(applicationEntity));
+        when(applicationRepository.save(any(Application.class))).thenReturn(applicationEntity);
+
+        GrantAmount actual = judgmentService.grant(findId);
+
+        assertThat(actual.getApplicationId()).isSameAs(findId);
+        assertThat(actual.getApprovalAmount()).isSameAs(judgmentEntity.getApprovalAmount());
     }
 }
