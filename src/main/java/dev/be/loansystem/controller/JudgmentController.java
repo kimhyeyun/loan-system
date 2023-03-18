@@ -1,5 +1,6 @@
 package dev.be.loansystem.controller;
 
+import dev.be.loansystem.dto.ApplicationDTO.GrantAmount;
 import dev.be.loansystem.dto.JudgmentDTO.*;
 import dev.be.loansystem.dto.ResponseDTO;
 import dev.be.loansystem.service.JudgmentService;
@@ -33,5 +34,10 @@ public class JudgmentController extends AbstractController {
         judgmentService.delete(judgmentId);
 
         return ok();
+    }
+
+    @PatchMapping("/{judgmentId}/grants")
+    public ResponseDTO<GrantAmount> grant(@PathVariable Long judgmentId) {
+        return ok(judgmentService.grant(judgmentId));
     }
 }
