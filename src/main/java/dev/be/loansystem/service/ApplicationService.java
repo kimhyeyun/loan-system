@@ -15,4 +15,6 @@ public interface ApplicationService {
 
     Boolean accetpTerms(Long applicationId, AcceptTermsRequest request);
 
+    Response contract(Long applicationId);
+
 }
