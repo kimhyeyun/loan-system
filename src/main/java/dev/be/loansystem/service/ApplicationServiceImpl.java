@@ -8,12 +8,14 @@ import dev.be.loansystem.exception.BaseException;
 import dev.be.loansystem.exception.ResultType;
 import dev.be.loansystem.repository.AcceptTermsRepository;
 import dev.be.loansystem.repository.ApplicationRepository;
+import dev.be.loansystem.repository.JudgmentRepository;
 import dev.be.loansystem.repository.TermsRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +29,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     private final TermsRepository termsRepository;
     private final AcceptTermsRepository acceptTermsRepository;
     private final ModelMapper modelMapper;
+    private final JudgmentRepository judgmentRepository;
 
     @Override
     public Response create(Request request) {
@@ -106,5 +109,27 @@ public class ApplicationServiceImpl implements ApplicationService{
             acceptTermsRepository.save(accepted);
         }
         return true;
+    }
+
+    @Override
+    public Response contract(Long applicationId) {
+        Application application = applicationRepository.findById(applicationId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
+
+        judgmentRepository.findByApplicationId(applicationId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
+
+        if (application.getApprovalAmount() == null
+                || application.getApprovalAmount().compareTo(BigDecimal.ZERO) == 0) {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        }
+
+        application.setContractedAt(LocalDateTime.now());
+
+        Application updated = applicationRepository.save(application);
+
+        return modelMapper.map(updated, Response.class);
     }
 }
