@@ -22,4 +22,9 @@ public class InternalController extends AbstractController {
     public ResponseDTO<Response> get(@PathVariable Long applicationId) {
         return ok(entryService.get(applicationId));
     }
+
+    @PutMapping("{applicationId}/entries")
+    public ResponseDTO<UpdateResponse> update(@PathVariable Long applicationId, @RequestBody Request request) {
+        return ok(entryService.update(applicationId, request));
+    }
 }
