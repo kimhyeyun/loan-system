@@ -13,18 +13,24 @@ public class InternalController extends AbstractController {
 
     private final EntryService entryService;
 
-    @PostMapping("{applicationId}/entries")
+    @PostMapping("/{applicationId}/entries")
     public ResponseDTO<Response> create(@PathVariable Long applicationId, @RequestBody Request request) {
         return ok(entryService.create(applicationId, request));
     }
 
-    @GetMapping("{applicationId}/entries")
+    @GetMapping("/{applicationId}/entries")
     public ResponseDTO<Response> get(@PathVariable Long applicationId) {
         return ok(entryService.get(applicationId));
     }
 
-    @PutMapping("{applicationId}/entries")
+    @PutMapping("/{applicationId}/entries")
     public ResponseDTO<UpdateResponse> update(@PathVariable Long applicationId, @RequestBody Request request) {
         return ok(entryService.update(applicationId, request));
+    }
+
+    @DeleteMapping("/{applicationId}/entries")
+    public ResponseDTO<Void> delete(@PathVariable Long applicationId) {
+        entryService.delete(applicationId);
+        return ok();
     }
 }
