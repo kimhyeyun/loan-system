@@ -8,4 +8,6 @@ public interface BalanceService {
     Response create(Long applicationId, CreateRequest request);
 
     Response update(Long applicationId, UpdateRequest request);
+
+    void delete(Long applicationId);
 }

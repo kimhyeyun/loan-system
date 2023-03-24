@@ -11,5 +11,7 @@ public interface EntryService {
     Response get(Long applicationId);
 
     UpdateResponse update(Long applicationId, Request request);
+
+    void delete(Long entryId);
 }
 
