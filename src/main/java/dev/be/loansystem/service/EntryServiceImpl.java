@@ -52,13 +52,12 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public Response get(Long applicationId) {
-        Optional<Entry> entry = entryRepository.findByApplicationId(applicationId);
+    public Response get(Long entryId) {
+        Entry entry = entryRepository.findById(entryId).orElseThrow(() -> {
+            throw new BaseException(ResultType.SYSTEM_ERROR);
+        });
 
-        if (entry.isPresent()) {
-            return modelMapper.map(entry, Response.class);
-        }
-        return null;
+        return modelMapper.map(entry, Response.class);
     }
 
     @Transactional
