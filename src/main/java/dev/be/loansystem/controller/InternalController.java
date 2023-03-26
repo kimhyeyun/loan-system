@@ -18,9 +18,9 @@ public class InternalController extends AbstractController {
         return ok(entryService.create(applicationId, request));
     }
 
-    @GetMapping("/{applicationId}/entries")
-    public ResponseDTO<Response> get(@PathVariable Long applicationId) {
-        return ok(entryService.get(applicationId));
+    @GetMapping("/entries/{entryId}")
+    public ResponseDTO<Response> get(@PathVariable Long entryId) {
+        return ok(entryService.get(entryId));
     }
 
     @PutMapping("/{applicationId}/entries")
@@ -28,9 +28,9 @@ public class InternalController extends AbstractController {
         return ok(entryService.update(applicationId, request));
     }
 
-    @DeleteMapping("/{applicationId}/entries")
-    public ResponseDTO<Void> delete(@PathVariable Long applicationId) {
-        entryService.delete(applicationId);
+    @DeleteMapping("/entries/{entryId}")
+    public ResponseDTO<Void> delete(@PathVariable Long entryId) {
+        entryService.delete(entryId);
         return ok();
     }
 }
