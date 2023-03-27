@@ -5,8 +5,11 @@ import dev.be.loansystem.dto.RepaymentDTO;
 import dev.be.loansystem.dto.ResponseDTO;
 import dev.be.loansystem.service.EntryService;
 import dev.be.loansystem.service.RepaymentService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +44,9 @@ public class InternalController extends AbstractController {
     public ResponseDTO<RepaymentDTO.Response> create(@PathVariable Long applicationId, @RequestBody RepaymentDTO.Request request) {
         return ok(repaymentService.create(applicationId, request));
     }
-    
+
+    @GetMapping("/{applicationId}/repayments")
+    public ResponseDTO<List<RepaymentDTO.ListResponse>> getPayments(@PathVariable Long applicationId) {
+        return ok(repaymentService.get(applicationId));
+    }
 }
