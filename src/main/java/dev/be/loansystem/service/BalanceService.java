@@ -10,4 +10,6 @@ public interface BalanceService {
     Response update(Long applicationId, UpdateRequest request);
 
     void delete(Long applicationId);
+
+    Response repaymentUpdate(Long applicationId, RepaymentRequest request);
 }
